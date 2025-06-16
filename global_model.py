@@ -47,6 +47,4 @@ def run_simulation(P_mTorr, Pabs, Te0, ne0, tmax):
     })
 
     csv = df.to_csv(index=False)
-    buffer = io.StringIO(csv)
-
-    return sol.t, np.transpose(sol.y), buffer
+    return sol.t, np.transpose(sol.y), csv

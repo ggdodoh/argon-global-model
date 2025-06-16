@@ -14,7 +14,7 @@ ne0 = st.sidebar.number_input("Initial Electron Density (m⁻³)", 1e14, 1e17, 5
 tmax = st.sidebar.number_input("Simulation Time (s)", 1e-6, 1e-2, 5e-3, format="%e")
 
 st.write("### Simulation Running...")
-t, result, csv_buffer = run_simulation(P_mTorr, Pabs, Te0, ne0, tmax)
+t, result, csv_string = run_simulation(P_mTorr, Pabs, Te0, ne0, tmax)
 
 fig, ax = plt.subplots()
 ax.plot(t, result[:,2], label='Electron Density [m⁻³]')
@@ -28,7 +28,7 @@ st.pyplot(fig)
 
 st.download_button(
     label="📥 Download Results as CSV",
-    data=csv_buffer,
+    data=csv_string,
     file_name="simulation_results.csv",
     mime="text/csv"
 )
