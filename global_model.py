@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 from reaction_rates import k_iz
+import pandas as pd
+import io
 
 def model(t, y, V, A, Pabs):
     n_Ar, n_Arp, n_e, Te = y
@@ -34,5 +36,17 @@ def run_simulation(P_mTorr, Pabs, Te0, ne0, tmax):
     A = np.pi * diameter**2 / 4
 
     y0 = [n_Ar0, 0, ne0, Te0]
-    sol = solve_ivp(model, [0, tmax], y0, args=(V, A, Pabs), method='RK45')
-    return sol.t, np.transpose(sol.y)
+    sol = solve_ivp(model, [0, tmax], y0, args=(V, A, Pabs), method='RK45', max_step=1e-5)
+
+    df = pd.DataFrame({
+        "Time (s)": sol.t,
+        "n_Ar (m^-3)": sol.y[0],
+        "n_Ar+ (m^-3)": sol.y[1],
+        "n_e (m^-3)": sol.y[2],
+        "T_e (eV)": sol.y[3],
+    })
+
+    csv = df.to_csv(index=False)
+    buffer = io.StringIO(csv)
+
+    return sol.t, np.transpose(sol.y), buffer
